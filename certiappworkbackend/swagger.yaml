@@ -1,0 +1,137 @@
+openapi: 3.0.0
+info:
+  title: Certiapp API
+  description: API for issuing and managing certificates
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: Local server
+
+paths:
+  /user/home:
+    get:
+      summary: Home route
+      description: Welcome message for Certiapp
+      responses:
+        "200":
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Welcome Certiapp
+
+  /user/issue:
+    post:
+      summary: Issue a certificate
+      description: Create and store a new certificate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Certificate"
+            example:
+              course: Java
+              certificateId: 101
+              candidatename: Varsha
+              grade: A
+              date: 20260127
+      responses:
+        "201":
+          description: Certificate created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Certificate"
+        "400":
+          description: Bad Request
+
+  /user/view:
+    get:
+      summary: View all certificates
+      description: Fetch all issued certificates
+      responses:
+        "200":
+          description: List of certificates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Certificate"
+        "500":
+          description: Internal server error
+
+  /user/courseName:
+    get:
+      summary: Get certificate by course name
+      description: Fetch certificates using course name
+      parameters:
+        - name: course
+          in: query
+          required: true
+          schema:
+            type: string
+          example: Java
+      responses:
+        "200":
+          description: Certificate found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Certificate"
+        "404":
+          description: Course not found
+
+  /user/Update:
+    put:
+      summary: Update certificate by course
+      description: Update certificate details using course name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Certificate"
+            example:
+              course: Java
+              certificateId: 102
+              candidatename: Varsha Prasad
+              grade: A+
+              date: 20260201
+      responses:
+        "200":
+          description: Certificate updated successfully
+        "404":
+          description: Course not found
+
+components:
+  schemas:
+    Certificate:
+      type: object
+      properties:
+        course:
+          type: string
+          example: Java
+        certificateId:
+          type: integer
+          example: 101
+        candidatename:
+          type: string
+          example: Varsha
+        grade:
+          type: string
+          example: A
+        date:
+          type: integer
+          example: 20260127
+      required:
+        - course
+        - certificateId
+        - candidatename
+        - grade
+        - date
